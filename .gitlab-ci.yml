@@ -19,6 +19,7 @@ composer:
   script:
     - php -v
     - composer create-project --prefer-dist laravel/laravel laravel
+    - cd laravel
     - composer install --prefer-dist --no-ansi --no-interaction --no-progress --no-scripts
     - cp .env.example .env
     - php artisan key:generate
