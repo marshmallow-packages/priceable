@@ -1,6 +1,6 @@
 {
     "name": "marshmallow/package-priceable",
-    "description": "-",
+    "description": "Package for handeling prices",
     "keywords": ["marshmallow"],
     "homepage": "https://github.com/Marshmallow-Development/",
     "type": "library",
