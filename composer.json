@@ -32,11 +32,8 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Marshmallow\\Product\\PriceableServiceProvider"
-            ],
-            "aliases": {
-                "Product": "Marshmallow\\Priceable\\Facades\\Price"
-            }
+                "Marshmallow\\Priceable\\PriceableServiceProvider"
+            ]
         }
     }
 }

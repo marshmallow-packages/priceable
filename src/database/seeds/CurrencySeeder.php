@@ -1,13 +1,13 @@
 <?php
 
-namespace Marshmallow\Product\Database\Seeds;
+namespace Marshmallow\Priceable\Database\Seeds;
 
 use Illuminate\Database\Seeder;
-use Marshmallow\Product\Models\Vat;
-use Marshmallow\Product\Models\Currency;
+use Marshmallow\Priceable\Models\Vat;
+use Marshmallow\Priceable\Models\Currency;
 
 /**
- * php artisan db:seed --class=Marshmallow\\Product\\Database\\Seeds\\CurrencySeeder
+ * php artisan db:seed --class=Marshmallow\\Priceable\\Database\\Seeds\\CurrencySeeder
  */
 
 class CurrencySeeder extends Seeder

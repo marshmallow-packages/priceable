@@ -1,12 +1,12 @@
 <?php
 
-namespace Marshmallow\Product\Database\Seeds;
+namespace Marshmallow\Priceable\Database\Seeds;
 
 use Illuminate\Database\Seeder;
-use Marshmallow\Product\Models\VatRate;
+use Marshmallow\Priceable\Models\VatRate;
 
 /**
- * php artisan db:seed --class=Marshmallow\\Product\\Database\\Seeds\\VatRatesSeeder
+ * php artisan db:seed --class=Marshmallow\\Priceable\\Database\\Seeds\\VatRatesSeeder
  */
 
 class VatRatesSeeder extends Seeder

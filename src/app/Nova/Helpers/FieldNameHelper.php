@@ -6,7 +6,7 @@ class FieldNameHelper
 {
     public static function priceLabel ()
     {
-    	return (config('product.nova.prices_are_including_vat'))
+    	return (config('priceable.nova.prices_are_including_vat'))
     				? __('Price (incl VAT)')
     				: __('Price (excl VAT)');
     }
