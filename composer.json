@@ -1,0 +1,42 @@
+{
+    "name": "marshmallow/package-priceable",
+    "description": "-,
+    "keywords": ["marshmallow"],
+    "homepage": "https://github.com/Marshmallow-Development/",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Stef",
+            "email": "stef@marshmallow.dev",
+            "homepage": "https://marshmallow.dev",
+            "role": "Developer"
+        }
+    ],
+    "support": {
+        "email": "stef@marshmallow.dev"
+    },
+    "minimum-stability": "dev",
+    "require": {
+        "php": "^7.4",
+        "spatie/laravel-sluggable": "^2.2",
+        "marshmallow/laravel-helpers": "^1.0",
+        "marshmallow/commands": "^1.0"
+    },
+    "autoload": {
+        "psr-4": {"Marshmallow\\Priceable\\": "src"}
+    },
+    "autoload-dev": {
+        "psr-4": {"Marshmallow\\Priceable\\": "src"}
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Marshmallow\\Product\\PriceableServiceProvider"
+            ],
+            "aliases": {
+                "Product": "Marshmallow\\Priceable\\Facades\\Price"
+            }
+        }
+    }
+}
