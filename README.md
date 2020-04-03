@@ -53,4 +53,7 @@ it_returns_a_carbon_instance_for_valid_till
 ## Extra
 factory(Marshmallow\Product\Models\Product::class, 10)->create();
 
+## Tests during development
+`vendor/bin/phpunit packages/marshmallow/package-priceable`
+
 ...
