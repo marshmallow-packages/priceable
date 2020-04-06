@@ -18,10 +18,10 @@ class CreatePricesTable extends Migration
             $table->morphs('priceable');
             $table->unsignedBigInteger('vatrate_id');
             $table->unsignedBigInteger('currency_id');
-            $table->float('display_price')->default(0);
-            $table->float('price_excluding_vat')->default(0);
-            $table->float('price_including_vat')->default(0);
-            $table->float('vat_amount')->default(0);
+            $table->bigInteger('display_price')->default(0);
+            $table->bigInteger('price_excluding_vat')->default(0);
+            $table->bigInteger('price_including_vat')->default(0);
+            $table->bigInteger('vat_amount')->default(0);
             $table->timestamp('valid_from')->nullable()->default(null);
             $table->timestamp('valid_till')->nullable()->default(null);
             $table->timestamps();

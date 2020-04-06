@@ -22,5 +22,14 @@ return [
 		'resources' => [
 			\Marshmallow\Product\Nova\Product::class,
 		]
-	]
+	],
+
+	/**
+	 * When we find more then one price on a model when calling
+	 * the $product->price() method, how should we deside which
+	 * price to use.
+	 */
+	'on_multiple_prices' => 'highest', // highest, lowest, eldest, newest
+
+	'public_excluding_vat' => env('PRICEABLE_PUBLIC_EXCLUDING_VAT', false),
 ];

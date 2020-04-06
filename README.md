@@ -7,13 +7,8 @@ Deze package gaat alle logica houden voor producten. Producten zullen in het alg
 ```
 composer require marshmallow/package-ecommerce
 ```
-
-Voeg de observer toe aan `AppServiceProvider.php`.
 ```
-public function boot()
-{
-    ModelObserver::observe();
-}
+CASHIER_CURRENCY=eur
 ```
 
 php artisan db:seed --class=Marshmallow\\Product\\Database\\Seeds\\VatRatesSeeder
@@ -28,13 +23,10 @@ Priceable
 is_can_make_use_of_the_price_facade
 
 Currency
-it_can_create_a_currency
+//
 
 VAT
-it_can_be_created
-it_creates_a_slug
-it_creates_a_unique_slug
-it_calculates_the_multiplier_correctly
+//
 
 Price
 it_has_one_currency
@@ -54,6 +46,5 @@ it_returns_a_carbon_instance_for_valid_till
 factory(Marshmallow\Product\Models\Product::class, 10)->create();
 
 ## Tests during development
-`vendor/bin/phpunit packages/marshmallow/package-priceable`
-
+`php artisan test packages/marshmallow/priceable`
 ...

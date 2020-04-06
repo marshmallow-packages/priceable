@@ -2,7 +2,7 @@
 
 namespace Tests\Unit;
 
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
 use Marshmallow\Priceable\Facades\Price;
 
 class PriceableTest extends TestCase

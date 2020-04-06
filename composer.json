@@ -21,7 +21,8 @@
         "php": "^7.4",
         "spatie/laravel-sluggable": "^2.2",
         "marshmallow/laravel-helpers": "^1.0",
-        "marshmallow/commands": "^1.0"
+        "marshmallow/commands": "^1.0",
+        "laravel/cashier": "^10.7"
     },
     "autoload": {
         "psr-4": {"Marshmallow\\Priceable\\": "src"}
