@@ -6,6 +6,7 @@ use App\Nova\Resource;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\MorphTo;
+use Laravel\Nova\Fields\Currency;
 use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\BelongsTo;
 use Marshmallow\Priceable\Nova\Helpers\FieldNameHelper;
@@ -51,7 +52,11 @@ class Price extends Resource
             ),
             BelongsTo::make('VatRate'),
             BelongsTo::make('Currency'),
-            Number::make(FieldNameHelper::priceLabel(), 'display_price')->step(0.01),
+            Currency::make(FieldNameHelper::priceLabel(), 'display_price')->displayUsing(function ($value) {
+                return \Marshmallow\Priceable\Facades\Price::formatAmount($value);
+            })->resolveUsing(function ($value) {
+                return \Marshmallow\Priceable\Facades\Price::amount($value);
+            }),
             DateTime::make('Valid from'),
             DateTime::make('Valid till'),
         ];
