@@ -16,24 +16,8 @@ class Price
 		return Cashier::formatAmount($amount, $currency);
 	}
 
-	/**
-	 * Should by dynamic
-	 */
-	public function getCurrency ($currency = null)
-	{
-		if ($currency) {
-			return $currency;
-		}
-		return 'EUR'; // This should not be hardcoded here
-	}
-
 	public function amount ($amount, $currency = null)
 	{
 		return round($amount / 100, 2);
-	}
-
-	public function ping ()
-	{
-		return 'pong';
 	}
 }
