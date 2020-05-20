@@ -2,6 +2,7 @@
 
 namespace Marshmallow\Priceable\Models;
 
+use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Marshmallow\Priceable\Models\VatRate;
@@ -61,6 +62,16 @@ class Price extends Model
 			return $this->amount($this->price_excluding_vat);
 		}
 		return $this->amount($this->price_including_vat);
+	}
+
+	public function priceAppendingCurrencyString ()
+	{
+		return $this->price() . ' ' . Str::of(env('CASHIER_CURRENCY'))->upper();
+	}
+
+	public function pricePrependingCurrencyString ()
+	{
+		return Str::of(env('CASHIER_CURRENCY'))->upper() . ' ' . $this->price();
 	}
 
 	public function formatExcludingVat ()

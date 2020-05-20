@@ -11,14 +11,50 @@ trait Priceable
 	public function price ()
 	{
 		$prices = $this->availablePrices;
-
 		if ($prices->count() > 1) {
 			$price = $this->desideWhichPriceToUse($prices);
 		} else {
 			$price = $prices->first();
 		}
 
-		return $price->price();
+		return $price;
+	}
+
+	public function isDiscounted ()
+	{
+		if ($prices = $this->hasMultiplePrices()) {
+			$highest = $this->desideWhichPriceToUse($prices, 'highest');
+			$lowest = $this->desideWhichPriceToUse($prices, 'lowest');
+
+			if ($highest->price() != $lowest->price()) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	public function getHighestPrice ()
+	{
+		if ($prices = $this->hasMultiplePrices()) {
+			return $this->desideWhichPriceToUse($prices, 'highest');
+		}
+		return $this->price();
+	}
+
+	public function hasPrice ()
+	{
+		return ($this->availablePrices->count() > 0);
+	}
+
+	protected function hasMultiplePrices ()
+	{
+		$prices = $this->availablePrices;
+		if ($prices->count() <= 1) {
+			return null;
+		}
+
+		return $prices;
 	}
 
 	protected function desideWhichPriceToUse (Collection $prices, $action = '')
@@ -49,7 +85,7 @@ trait Priceable
 	 */
 	public function getPriceAttribute ()
 	{
-		return $this->price();
+		return $this->price()->price();
 	}
 
 
