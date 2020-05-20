@@ -13,9 +13,9 @@ class PriceableServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->loadMigrationsFrom(__DIR__.'/database/migrations');
+        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
         $this->mergeConfigFrom(
-            __DIR__.'/config/priceable.php', 'priceable'
+            __DIR__.'/../config/priceable.php', 'priceable'
         );
     }
 
@@ -31,7 +31,7 @@ class PriceableServiceProvider extends ServiceProvider
          */
         // $this->loadViewsFrom(__DIR__.'/views', 'marshmallow');
 
-        $this->loadFactoriesFrom(__DIR__.'/database/factories');
+        $this->loadFactoriesFrom(__DIR__.'/../database/factories');
 
         $this->publishes([
             // __DIR__.'/views' => resource_path('views/vendor/marshmallow'),

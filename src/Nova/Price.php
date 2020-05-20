@@ -33,7 +33,7 @@ class Price extends Resource
      * @var array
      */
     public static $search = [
-        'name',
+        //
     ];
 
     public static $group = 'Pricing';

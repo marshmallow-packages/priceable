@@ -7,13 +7,14 @@ use Illuminate\Database\Eloquent\Builder;
 use Marshmallow\Priceable\Models\VatRate;
 use Marshmallow\Priceable\Casts\CastPrice;
 use Marshmallow\Priceable\Models\Currency;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Marshmallow\HelperFunctions\Traits\Observer;
 use Marshmallow\HelperFunctions\Facades\BuilderHelper;
 use Marshmallow\HelperFunctions\Traits\ModelHasDefaults;
 
 class Price extends Model
 {
-	use ModelHasDefaults, Observer;
+	use ModelHasDefaults, Observer, SoftDeletes;
 
 	protected $guarded = [];
 
