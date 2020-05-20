@@ -5,7 +5,7 @@ Deze package gaat alle logica houden voor producten. Producten zullen in het alg
 
 ### Installatie
 ```
-composer require marshmallow/package-ecommerce
+composer require marshmallow/priceable
 ```
 ```
 CASHIER_CURRENCY=eur
