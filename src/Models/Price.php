@@ -6,11 +6,10 @@ use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Marshmallow\Priceable\Models\VatRate;
-use Marshmallow\Priceable\Casts\CastPrice;
 use Marshmallow\Priceable\Models\Currency;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Marshmallow\HelperFunctions\Facades\Builder as BuilderFacade;
 use Marshmallow\HelperFunctions\Traits\Observer;
-use Marshmallow\HelperFunctions\Facades\BuilderHelper;
 use Marshmallow\HelperFunctions\Traits\ModelHasDefaults;
 
 class Price extends Model
@@ -24,12 +23,12 @@ class Price extends Model
 		'valid_till' => 'datetime',
 	];
 
-	protected function formatAmount ($amount, $currency = null)
+	protected function formatAmount($amount, $currency = null)
 	{
 		return \Marshmallow\Priceable\Facades\Price::formatAmount($amount, $currency);
 	}
 
-	protected function amount ($amount, $currency = null)
+	protected function amount($amount, $currency = null)
 	{
 		return \Marshmallow\Priceable\Facades\Price::amount($amount, $currency);
 	}
@@ -39,7 +38,7 @@ class Price extends Model
 	 * is multiplied by 100 so we can store it in cents.
 	 * @param [type] $amount [description]
 	 */
-	protected function setDisplayPriceAttribute (float $amount)
+	protected function setDisplayPriceAttribute(float $amount)
 	{
 		$this->attributes['display_price'] = $amount * 100;
 	}
@@ -48,7 +47,7 @@ class Price extends Model
 	 * This function can be used on the front-end.
 	 * @return string Formatted price
 	 */
-	public function formatPrice ()
+	public function formatPrice()
 	{
 		if (config('priceable.public_excluding_vat')) {
 			return $this->formatAmount($this->price_excluding_vat);
@@ -56,7 +55,7 @@ class Price extends Model
 		return $this->formatAmount($this->price_including_vat);
 	}
 
-	public function price ()
+	public function price()
 	{
 		if (config('priceable.public_excluding_vat')) {
 			return $this->amount($this->price_excluding_vat);
@@ -64,42 +63,42 @@ class Price extends Model
 		return $this->amount($this->price_including_vat);
 	}
 
-	public function priceAppendingCurrencyString ()
+	public function priceAppendingCurrencyString()
 	{
 		return $this->price() . ' ' . Str::of(env('CASHIER_CURRENCY'))->upper();
 	}
 
-	public function pricePrependingCurrencyString ()
+	public function pricePrependingCurrencyString()
 	{
 		return Str::of(env('CASHIER_CURRENCY'))->upper() . ' ' . $this->price();
 	}
 
-	public function formatExcludingVat ()
+	public function formatExcludingVat()
 	{
 		return $this->formatAmount($this->price_excluding_vat);
 	}
 
-	public function excludingVat ()
+	public function excludingVat()
 	{
 		return $this->amount($this->price_excluding_vat);
 	}
 
-	public function formatIncludingVat ()
+	public function formatIncludingVat()
 	{
 		return $this->formatAmount($this->price_including_vat);
 	}
 
-	public function includingVat ()
+	public function includingVat()
 	{
 		return $this->amount($this->price_including_vat);
 	}
 
-	public function formatVat ()
+	public function formatVat()
 	{
 		return $this->formatAmount($this->vat_amount);
 	}
 
-	public function vat ()
+	public function vat()
 	{
 		return $this->amount($this->vat_amount);
 	}
@@ -107,30 +106,30 @@ class Price extends Model
 	/**
 	 * Scopes
 	 */
-	public function scopeCurrentlyActive (Builder $builder)
+	public function scopeCurrentlyActive(Builder $builder)
 	{
-		BuilderHelper::activeBetweenDates($builder);
+		BuilderFacade::activeBetweenDates($builder);
 	}
 
 	/**
 	 * Relationships
 	 */
-	public function vatrate ()
+	public function vatrate()
 	{
 		return $this->belongsTo(VatRate::class);
 	}
 
-	public function currency ()
+	public function currency()
 	{
 		return $this->belongsTo(Currency::class);
 	}
 
-	public function priceable ()
+	public function priceable()
 	{
 		return $this->morphTo();
 	}
 
-	
+
 	/**
 	 * For a price we need to make sure we always have
 	 * a VAT rate and a Currency. Selecting them everytime
@@ -138,7 +137,7 @@ class Price extends Model
 	 * that come from the config.
 	 * @return array Array with default attributes
 	 */
-	public function defaultAttributes ()
+	public function defaultAttributes()
 	{
 		return [
 			'vatrate_id' => config('priceable.nova.defaults.vat_rates'),
@@ -151,25 +150,22 @@ class Price extends Model
 	 * will be filled when creating or updating
 	 * a price.
 	 */
-	public static function getObserver (): string
+	public static function getObserver(): string
 	{
 		return \Marshmallow\Priceable\Observers\PriceObserver::class;
 	}
 
-	public function __saving ()
+	public function __saving()
 	{
 		if (config('priceable.nova.prices_are_including_vat')) {
-    		
+
     		/**
     		 * The added price is including the VAT. We need to calculate
     		 * the price without the VAT.
     		 */
     		$price_excluding_vat = ($this->display_price / (100 + $this->vatrate->rate)) * 100;
-
     	} else {
-
     		$price_excluding_vat = $this->display_price;
-    	
     	}
 
         $this->price_excluding_vat = $price_excluding_vat;
