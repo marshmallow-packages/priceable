@@ -85,6 +85,9 @@ trait Priceable
 	 */
 	public function getPriceAttribute ()
 	{
+		if (!$this->price()) {
+			return;
+		}
 		return $this->price()->price();
 	}
 
