@@ -19,10 +19,10 @@
     "minimum-stability": "dev",
     "require": {
         "php": "^7.4",
-        "spatie/laravel-sluggable": "^2.2",
+        "marshmallow/sluggable": "^1.0",
         "marshmallow/helpers": "^2.0",
         "marshmallow/commands": "^1.0",
-        "laravel/cashier": "^10.7"
+        "laravel/cashier": "^12.3"
     },
     "autoload": {
         "psr-4": {"Marshmallow\\Priceable\\": "src"}
