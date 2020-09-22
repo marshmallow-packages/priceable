@@ -50,8 +50,8 @@ class Price extends Resource
             MorphTo::make('Priceable', 'priceable')->types(
                 config('priceable.nova.resources')
             ),
-            BelongsTo::make('VatRate'),
-            BelongsTo::make('Currency'),
+            BelongsTo::make('VatRate')->withoutTrashed(),
+            BelongsTo::make('Currency')->withoutTrashed(),
             Currency::make(FieldNameHelper::priceLabel(), 'display_price')->displayUsing(function ($value) {
                 return \Marshmallow\Priceable\Facades\Price::formatAmount($value);
             })->resolveUsing(function ($value) {

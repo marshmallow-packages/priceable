@@ -1,13 +1,13 @@
 <?php
 
-namespace Marshmallow\Priceable\Database\Seeds;
+namespace Marshmallow\Priceable\Seeders;
 
 use Illuminate\Database\Seeder;
 use Marshmallow\Priceable\Models\Vat;
 use Marshmallow\Priceable\Models\Currency;
 
 /**
- * php artisan db:seed --class=Marshmallow\\Priceable\\Database\\Seeds\\CurrencySeeder
+ * php artisan db:seed --class=Marshmallow\\Priceable\\Seeders\\CurrencySeeder
  */
 
 class CurrencySeeder extends Seeder
@@ -15,7 +15,7 @@ class CurrencySeeder extends Seeder
 	protected $default_currencies = [
 		'Euro'
 	];
-    
+
 
     /**
      * Run the database seeds.
