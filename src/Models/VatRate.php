@@ -1,23 +1,24 @@
 <?php
 
 namespace Marshmallow\Priceable\Models;
-use Marshmallow\Sluggable\HasSlug;
-use Marshmallow\Sluggable\SlugOptions;
+
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Marshmallow\Sluggable\HasSlug;
+use Marshmallow\Sluggable\SlugOptions;
 
 class VatRate extends Model
 {
-	use HasSlug, SoftDeletes;
+    use HasSlug, SoftDeletes;
 
-	protected $guarded = [];
+    protected $guarded = [];
 
-    public function multiplier ()
+    public function multiplier()
     {
         return 1 + $this->rate / 100;
     }
 
-	/**
+    /**
      * Get the options for generating the slug.
      */
     public function getSlugOptions(): SlugOptions

@@ -4,9 +4,8 @@ namespace Marshmallow\Priceable\Nova;
 
 use App\Nova\Resource;
 use Illuminate\Http\Request;
-use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\Number;
-use Laravel\Nova\Fields\HasMany;
+use Laravel\Nova\Fields\Text;
 
 class VatRate extends Resource
 {
