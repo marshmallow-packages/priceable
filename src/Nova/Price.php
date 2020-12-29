@@ -4,10 +4,10 @@ namespace Marshmallow\Priceable\Nova;
 
 use App\Nova\Resource;
 use Illuminate\Http\Request;
-use Laravel\Nova\Fields\BelongsTo;
+use Laravel\Nova\Fields\MorphTo;
 use Laravel\Nova\Fields\Currency;
 use Laravel\Nova\Fields\DateTime;
-use Laravel\Nova\Fields\MorphTo;
+use Laravel\Nova\Fields\BelongsTo;
 use Marshmallow\Priceable\Nova\Helpers\FieldNameHelper;
 
 class Price extends Resource

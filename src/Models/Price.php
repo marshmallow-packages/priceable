@@ -3,12 +3,10 @@
 namespace Marshmallow\Priceable\Models;
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Str;
-use Marshmallow\HelperFunctions\Facades\Builder as BuilderFacade;
-use Marshmallow\HelperFunctions\Traits\ModelHasDefaults;
 use Marshmallow\HelperFunctions\Traits\Observer;
+use Marshmallow\HelperFunctions\Traits\ModelHasDefaults;
+use Marshmallow\HelperFunctions\Facades\Builder as BuilderFacade;
 
 class Price extends Model
 {
@@ -108,7 +106,7 @@ class Price extends Model
      */
     public function scopeCurrentlyActive(Builder $builder)
     {
-        BuilderFacade::activeBetweenDates($builder);
+        BuilderFacade::published($builder);
     }
 
     /**
