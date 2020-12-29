@@ -108,7 +108,7 @@ class Price extends Model
 	 */
 	public function scopeCurrentlyActive(Builder $builder)
 	{
-		BuilderFacade::activeBetweenDates($builder);
+		BuilderFacade::published($builder);
 	}
 
 	/**
