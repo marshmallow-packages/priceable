@@ -3,7 +3,6 @@
 namespace Marshmallow\Priceable\Seeders;
 
 use Illuminate\Database\Seeder;
-use Marshmallow\Priceable\Models\Vat;
 use Marshmallow\Priceable\Models\Currency;
 
 /**
@@ -12,10 +11,9 @@ use Marshmallow\Priceable\Models\Currency;
 
 class CurrencySeeder extends Seeder
 {
-	protected $default_currencies = [
-		'Euro'
-	];
-
+    protected $default_currencies = [
+        'Euro',
+    ];
 
     /**
      * Run the database seeds.
@@ -25,13 +23,13 @@ class CurrencySeeder extends Seeder
     public function run()
     {
         foreach ($this->default_currencies as $currency) {
-        	if (Currency::where('name', $currency)->get()->first()) {
-        		continue;
-        	}
+            if (Currency::where('name', $currency)->get()->first()) {
+                continue;
+            }
 
-        	Currency::create([
-        		'name' => $currency
-        	]);
+            Currency::create([
+                'name' => $currency,
+            ]);
         }
     }
 }

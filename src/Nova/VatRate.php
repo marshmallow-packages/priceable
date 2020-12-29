@@ -6,7 +6,6 @@ use App\Nova\Resource;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\Number;
-use Laravel\Nova\Fields\HasMany;
 
 class VatRate extends Resource
 {

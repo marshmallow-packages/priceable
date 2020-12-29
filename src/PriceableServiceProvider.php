@@ -15,7 +15,8 @@ class PriceableServiceProvider extends ServiceProvider
     {
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
         $this->mergeConfigFrom(
-            __DIR__.'/../config/priceable.php', 'priceable'
+            __DIR__.'/../config/priceable.php',
+            'priceable'
         );
     }
 

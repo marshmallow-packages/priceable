@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace Marshmallow\Priceable\Facades;
 

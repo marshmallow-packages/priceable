@@ -4,7 +4,6 @@ namespace Marshmallow\Priceable\Nova;
 
 use App\Nova\Resource;
 use Illuminate\Http\Request;
-use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\MorphTo;
 use Laravel\Nova\Fields\Currency;
 use Laravel\Nova\Fields\DateTime;

@@ -8,100 +8,105 @@ use Illuminate\Database\Eloquent\Collection;
 
 trait Priceable
 {
-	public function price ()
-	{
-		$prices = $this->availablePrices;
-		if ($prices->count() > 1) {
-			$price = $this->desideWhichPriceToUse($prices);
-		} else {
-			$price = $prices->first();
-		}
+    public function price()
+    {
+        $prices = $this->availablePrices;
+        if ($prices->count() > 1) {
+            $price = $this->desideWhichPriceToUse($prices);
+        } else {
+            $price = $prices->first();
+        }
 
-		return $price;
-	}
+        return $price;
+    }
 
-	public function isDiscounted ()
-	{
-		if ($prices = $this->hasMultiplePrices()) {
-			$highest = $this->desideWhichPriceToUse($prices, 'highest');
-			$lowest = $this->desideWhichPriceToUse($prices, 'lowest');
+    public function isDiscounted()
+    {
+        if ($prices = $this->hasMultiplePrices()) {
+            $highest = $this->desideWhichPriceToUse($prices, 'highest');
+            $lowest = $this->desideWhichPriceToUse($prices, 'lowest');
 
-			if ($highest->price() != $lowest->price()) {
-				return true;
-			}
-		}
+            if ($highest->price() != $lowest->price()) {
+                return true;
+            }
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	public function getHighestPrice ()
-	{
-		if ($prices = $this->hasMultiplePrices()) {
-			return $this->desideWhichPriceToUse($prices, 'highest');
-		}
-		return $this->price();
-	}
+    public function getHighestPrice()
+    {
+        if ($prices = $this->hasMultiplePrices()) {
+            return $this->desideWhichPriceToUse($prices, 'highest');
+        }
 
-	public function hasPrice ()
-	{
-		return ($this->availablePrices->count() > 0);
-	}
+        return $this->price();
+    }
 
-	protected function hasMultiplePrices ()
-	{
-		$prices = $this->availablePrices;
-		if ($prices->count() <= 1) {
-			return null;
-		}
+    public function hasPrice()
+    {
+        return ($this->availablePrices->count() > 0);
+    }
 
-		return $prices;
-	}
+    protected function hasMultiplePrices()
+    {
+        $prices = $this->availablePrices;
+        if ($prices->count() <= 1) {
+            return null;
+        }
 
-	protected function desideWhichPriceToUse (Collection $prices, $action = '')
-	{
-		$action = ($action) ?: config('priceable.on_multiple_prices');
+        return $prices;
+    }
 
-		switch ($action) {
-			case 'highest':
-				return $prices->sortByDesc('display_price')->first();
-				break;
-			case 'lowest':
-				return $prices->sortBy('display_price')->first();
-				break;
-			case 'eldest':
-				return $prices->sortBy('valid_from')->first();
-				break;
-			case 'newest':
-				return $prices->sortByDesc('valid_from')->first();
-				break;
-		}
+    protected function desideWhichPriceToUse(Collection $prices, $action = '')
+    {
+        $action = ($action) ?: config('priceable.on_multiple_prices');
 
-		return $prices->first();
-	}
+        switch ($action) {
+            case 'highest':
+                return $prices->sortByDesc('display_price')->first();
 
-	/**
-	 * This function makes it possible to call this
-	 * like an attribute. Eq; $product->price
-	 */
-	public function getPriceAttribute ()
-	{
-		if (!$this->price()) {
-			return;
-		}
-		return $this->price()->price();
-	}
+                break;
+            case 'lowest':
+                return $prices->sortBy('display_price')->first();
 
+                break;
+            case 'eldest':
+                return $prices->sortBy('valid_from')->first();
 
-	/**
-	 * Relationships
-	 */
-	public function availablePrices ()
-	{
-		return $this->prices()->currentlyActive();
-	}
+                break;
+            case 'newest':
+                return $prices->sortByDesc('valid_from')->first();
 
-    public function prices ()
-	{
-		return $this->morphMany(Price::class, 'priceable');
-	}
+                break;
+        }
+
+        return $prices->first();
+    }
+
+    /**
+     * This function makes it possible to call this
+     * like an attribute. Eq; $product->price
+     */
+    public function getPriceAttribute()
+    {
+        if (! $this->price()) {
+            return;
+        }
+
+        return $this->price()->price();
+    }
+
+    /**
+     * Relationships
+     */
+    public function availablePrices()
+    {
+        return $this->prices()->currentlyActive();
+    }
+
+    public function prices()
+    {
+        return $this->morphMany(Price::class, 'priceable');
+    }
 }
