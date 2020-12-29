@@ -2,8 +2,6 @@
 
 namespace Marshmallow\Priceable\Models;
 
-use Illuminate\Support\Str;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Marshmallow\HelperFunctions\Traits\Observer;

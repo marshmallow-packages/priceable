@@ -2,9 +2,9 @@
 
 namespace Marshmallow\Priceable\Traits;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Config;
 use Marshmallow\Priceable\Models\Price;
-use Illuminate\Database\Eloquent\Collection;
 
 trait Priceable
 {
