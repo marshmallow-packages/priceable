@@ -2,9 +2,9 @@
 
 namespace Marshmallow\Priceable\Nova\Fields;
 
-use Laravel\Nova\Fields\DateTime;
-use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\Text;
+use Laravel\Nova\Fields\Number;
+use Laravel\Nova\Fields\DateTime;
 
 class PriceableFields
 {
