@@ -4,10 +4,7 @@ namespace Marshmallow\Priceable;
 
 use Money\Money;
 use Money\Currency;
-use NumberFormatter;
 use Laravel\Cashier\Cashier;
-use Money\Currencies\ISOCurrencies;
-use Money\Formatter\IntlMoneyFormatter;
 
 class Price
 {
@@ -15,6 +12,14 @@ class Price
 	{
 		return Cashier::formatAmount($amount, $currency);
 	}
+
+    public function getMoney($amount, Currency $currency = null)
+    {
+        if (!$currency) {
+            $currency = new Currency('eur');
+        }
+        return new Money($amount, $currency);
+    }
 
 	public function amount ($amount, $currency = null)
 	{
