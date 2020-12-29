@@ -42,7 +42,8 @@ class Currency extends Resource
     public function fields(Request $request)
     {
         return [
-            Text::make('Name')->sortable(),
+            Text::make(__('Name'), 'name')->sortable()->required(),
+            Text::make(__('ISO 4217'), 'iso_4217')->sortable()->nullable()->rules(['nullable', 'min:3', 'max:3']),
         ];
     }
 

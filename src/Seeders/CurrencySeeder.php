@@ -12,7 +12,7 @@ use Marshmallow\Priceable\Models\Currency;
 class CurrencySeeder extends Seeder
 {
     protected $default_currencies = [
-        'Euro',
+        'Euro' => 'EUR',
     ];
 
     /**
@@ -22,13 +22,14 @@ class CurrencySeeder extends Seeder
      */
     public function run()
     {
-        foreach ($this->default_currencies as $currency) {
+        foreach ($this->default_currencies as $currency => $iso) {
             if (Currency::where('name', $currency)->get()->first()) {
                 continue;
             }
 
             Currency::create([
                 'name' => $currency,
+                'iso_4217' => $iso,
             ]);
         }
     }
