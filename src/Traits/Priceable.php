@@ -5,6 +5,7 @@ namespace Marshmallow\Priceable\Traits;
 use Illuminate\Support\Facades\Config;
 use Marshmallow\Priceable\Models\Price;
 use Illuminate\Database\Eloquent\Collection;
+use Marshmallow\Priceable\Facades\Price as PriceHelper;
 
 trait Priceable
 {
@@ -18,6 +19,17 @@ trait Priceable
         }
 
         return $price;
+    }
+
+    public function getPriceHelper()
+    {
+        $price = $this->price();
+        return PriceHelper::make(
+            $this->price()->vatrate,
+            $this->price()->currency,
+            $price->display_price,
+            ($price->display_price === $price->price_including_vat)
+        );
     }
 
     public function isDiscounted()
