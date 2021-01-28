@@ -135,7 +135,7 @@ class Price extends Model
      * that come from the config.
      * @return array Array with default attributes
      */
-    public function defaultAttributes()
+    public function defaultAttributes(): array
     {
         return [
             'vatrate_id' => config('priceable.nova.defaults.vat_rates'),
