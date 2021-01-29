@@ -27,27 +27,10 @@ class PriceableServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        /**
-         * Views
-         */
-        // $this->loadViewsFrom(__DIR__.'/views', 'marshmallow');
-
         $this->loadFactoriesFrom(__DIR__.'/../database/factories');
 
         $this->publishes([
-            // __DIR__.'/views' => resource_path('views/vendor/marshmallow'),
-        ]);
-
-
-        /**
-         * Routes
-         */
-        $this->loadRoutesFrom(__DIR__.'/routes.php');
-
-        if ($this->app->runningInConsole()) {
-            $this->commands([
-                // InstallCommand::class,
-            ]);
-        }
+            __DIR__.'/../config/priceable.php' => config_path('priceable.php'),
+        ], 'config');
     }
 }
