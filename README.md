@@ -7,6 +7,13 @@ Deze package gaat alle logica houden voor producten. Producten zullen in het alg
 ```
 composer require marshmallow/priceable
 ```
+
+### Vendor Publish
+...
+```bash
+php artisan vendor:publish --provider="Marshmallow\Priceable\PriceableServiceProvider" --tag="config" --force
+```
+
 ```
 CASHIER_CURRENCY=eur
 ```
