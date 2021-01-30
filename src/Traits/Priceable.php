@@ -9,6 +9,24 @@ use Marshmallow\Priceable\Facades\Price as PriceHelper;
 
 trait Priceable
 {
+    public function currentPrice($multiplier = null)
+    {
+        $price = $this->price()->price();
+        if ($multiplier) {
+            $price = $price * $multiplier;
+        }
+        return $price;
+    }
+
+    public function discountedFrom($multiplier = null)
+    {
+        $price = $this->getHighestPrice()->price();
+        if ($multiplier) {
+            $price = $price * $multiplier;
+        }
+        return $price;
+    }
+    
     public function price()
     {
         $prices = $this->availablePrices;
