@@ -14,6 +14,11 @@ composer require marshmallow/priceable
 php artisan vendor:publish --provider="Marshmallow\Priceable\PriceableServiceProvider" --tag="config" --force
 ```
 
+### Available methods
+currentPrice()
+isDiscounted()
+discountedFrom()
+
 ```
 CASHIER_CURRENCY=eur
 ```
