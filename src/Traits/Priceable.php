@@ -14,13 +14,24 @@ trait Priceable
 
     public function priceType(PriceType $type)
     {
-        $this->price_type = $type;
-        return $this;
+        /**
+         * We need to clone this item because otherwise
+         * it will only return the provided price type
+         * prices and i will not return the default price
+         * anymore when you just call ->currentPrice() directly
+         */
+        $self = clone $this;
+        $self->price_type = $type;
+        return $self;
     }
 
     public function currentPrice($multiplier = null)
     {
-        $price = $this->price($type)->price();
+        $price = $this->price();
+        if (!$price) {
+            return 0;
+        }
+        $price = $price->price();
         if ($multiplier) {
             $price = $price * $multiplier;
         }
@@ -38,7 +49,7 @@ trait Priceable
 
     public function price()
     {
-        $prices = $this->availablePrices($type)->get();
+        $prices = $this->availablePrices()->get();
         if ($prices->count() > 1) {
             $price = $this->desideWhichPriceToUse($prices);
         } else {
@@ -50,7 +61,7 @@ trait Priceable
 
     public function getPriceHelper()
     {
-        $price = $this->price($type);
+        $price = $this->price();
         return PriceHelper::make(
             $this->price()->vatrate,
             $this->price()->currency,
@@ -61,7 +72,7 @@ trait Priceable
 
     public function isDiscounted()
     {
-        if ($prices = $this->hasMultiplePrices($type)) {
+        if ($prices = $this->hasMultiplePrices()) {
             $highest = $this->desideWhichPriceToUse($prices, 'highest');
             $lowest = $this->desideWhichPriceToUse($prices, 'lowest');
 
@@ -75,21 +86,21 @@ trait Priceable
 
     public function getHighestPrice()
     {
-        if ($prices = $this->hasMultiplePrices($type)) {
+        if ($prices = $this->hasMultiplePrices()) {
             return $this->desideWhichPriceToUse($prices, 'highest');
         }
 
-        return $this->price($type);
+        return $this->price();
     }
 
     public function hasPrice()
     {
-        return ($this->availablePrices($type)->count() > 0);
+        return ($this->availablePrices()->count() > 0);
     }
 
     protected function hasMultiplePrices()
     {
-        $prices = $this->availablePrices($type)->get();
+        $prices = $this->availablePrices()->get();
         if ($prices->count() <= 1) {
             return null;
         }
