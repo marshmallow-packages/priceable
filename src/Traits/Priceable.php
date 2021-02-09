@@ -4,14 +4,23 @@ namespace Marshmallow\Priceable\Traits;
 
 use Illuminate\Support\Facades\Config;
 use Marshmallow\Priceable\Models\Price;
+use Marshmallow\Priceable\Models\PriceType;
 use Illuminate\Database\Eloquent\Collection;
 use Marshmallow\Priceable\Facades\Price as PriceHelper;
 
 trait Priceable
 {
+    protected $price_type;
+
+    public function priceType(PriceType $type)
+    {
+        $this->price_type = $type;
+        return $this;
+    }
+
     public function currentPrice($multiplier = null)
     {
-        $price = $this->price()->price();
+        $price = $this->price($type)->price();
         if ($multiplier) {
             $price = $price * $multiplier;
         }
@@ -26,10 +35,10 @@ trait Priceable
         }
         return $price;
     }
-    
+
     public function price()
     {
-        $prices = $this->availablePrices;
+        $prices = $this->availablePrices($type)->get();
         if ($prices->count() > 1) {
             $price = $this->desideWhichPriceToUse($prices);
         } else {
@@ -41,7 +50,7 @@ trait Priceable
 
     public function getPriceHelper()
     {
-        $price = $this->price();
+        $price = $this->price($type);
         return PriceHelper::make(
             $this->price()->vatrate,
             $this->price()->currency,
@@ -52,7 +61,7 @@ trait Priceable
 
     public function isDiscounted()
     {
-        if ($prices = $this->hasMultiplePrices()) {
+        if ($prices = $this->hasMultiplePrices($type)) {
             $highest = $this->desideWhichPriceToUse($prices, 'highest');
             $lowest = $this->desideWhichPriceToUse($prices, 'lowest');
 
@@ -66,21 +75,21 @@ trait Priceable
 
     public function getHighestPrice()
     {
-        if ($prices = $this->hasMultiplePrices()) {
+        if ($prices = $this->hasMultiplePrices($type)) {
             return $this->desideWhichPriceToUse($prices, 'highest');
         }
 
-        return $this->price();
+        return $this->price($type);
     }
 
     public function hasPrice()
     {
-        return ($this->availablePrices->count() > 0);
+        return ($this->availablePrices($type)->count() > 0);
     }
 
     protected function hasMultiplePrices()
     {
-        $prices = $this->availablePrices;
+        $prices = $this->availablePrices($type)->get();
         if ($prices->count() <= 1) {
             return null;
         }
@@ -120,11 +129,26 @@ trait Priceable
      */
     public function getPriceAttribute()
     {
-        if (! $this->price()) {
+        $type = $this->getPriceType();
+        if (! $this->price($type)) {
             return;
         }
 
-        return $this->price()->price();
+        return $this->price($type)->price();
+    }
+
+    protected function getPriceType()
+    {
+        if ($this->price_type) {
+            return $this->price_type;
+        }
+
+        return $this->getDefaultPriceType();
+    }
+
+    protected function getDefaultPriceType()
+    {
+        return PriceType::find(config('priceable.detault_price_type'));
     }
 
     /**
@@ -132,10 +156,10 @@ trait Priceable
      */
     public function availablePrices()
     {
-        return $this->prices()->currentlyActive();
+        return $this->prices()->where('price_type_id', $this->getPriceType()->id)->currentlyActive();
     }
 
-    public function prices()
+    public function prices(PriceType $type = null)
     {
         return $this->morphMany(Price::class, 'priceable');
     }

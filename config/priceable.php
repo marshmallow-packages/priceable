@@ -2,6 +2,8 @@
 
 return [
 
+    'detault_price_type' => 1,
+
 	/**
 	 * Overschrijf nova settings. Door zoveel mogelijk beheerbaar
 	 * te maken in deze config, deste kleiner is de kans dat de

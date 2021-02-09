@@ -29,6 +29,7 @@ php artisan db:seed --class=Marshmallow\\Product\\Database\\Seeds\\VatRatesSeede
 `php artisan marshmallow:resource Price Priceable`
 `php artisan marshmallow:resource VatRate Priceable`
 `php artisan marshmallow:resource Currency Priceable`
+`php artisan marshmallow:resource PriceType Priceable`
 
 ## Tests
 Priceable

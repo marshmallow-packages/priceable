@@ -4,6 +4,7 @@ namespace Marshmallow\Priceable\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use Marshmallow\Priceable\Models\PriceType;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Marshmallow\HelperFunctions\Traits\Observer;
 use Marshmallow\HelperFunctions\Traits\ModelHasDefaults;
@@ -113,6 +114,11 @@ class Price extends Model
     /**
      * Relationships
      */
+    public function type()
+    {
+        return $this->belongsTo(PriceType::class, 'price_type_id');
+    }
+
     public function vatrate()
     {
         return $this->belongsTo(VatRate::class);
@@ -140,6 +146,7 @@ class Price extends Model
         return [
             'vatrate_id' => config('priceable.nova.defaults.vat_rates'),
             'currency_id' => config('priceable.nova.defaults.currencies'),
+            'price_type_id' => config('priceable.nova.defaults.price_type'),
         ];
     }
 

@@ -8,6 +8,9 @@ use Laravel\Nova\Fields\MorphTo;
 use Laravel\Nova\Fields\Currency;
 use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\BelongsTo;
+use Marshmallow\Priceable\Nova\VatRate;
+use Marshmallow\Priceable\Nova\Currency as CurrencyResource;
+use Marshmallow\Priceable\Nova\PriceType;
 use Marshmallow\Priceable\Nova\Helpers\FieldNameHelper;
 
 class Price extends Resource
@@ -48,18 +51,19 @@ class Price extends Resource
     public function fields(Request $request)
     {
         return [
-            MorphTo::make('Priceable', 'priceable')->types(
+            MorphTo::make(__('Priceable'), 'priceable')->types(
                 config('priceable.nova.resources')
             ),
-            BelongsTo::make('VatRate')->withoutTrashed(),
-            BelongsTo::make('Currency')->withoutTrashed(),
+            BelongsTo::make(__('Price Type'), 'type', PriceType::class)->withoutTrashed(),
+            BelongsTo::make(__('Vat rate'), 'vatrate', VatRate::class)->withoutTrashed(),
+            BelongsTo::make(__('Currency'), 'currency', CurrencyResource::class)->withoutTrashed(),
             Currency::make(FieldNameHelper::priceLabel(), 'display_price')->displayUsing(function ($value) {
                 return \Marshmallow\Priceable\Facades\Price::formatAmount($value);
             })->resolveUsing(function ($value) {
                 return \Marshmallow\Priceable\Facades\Price::amount($value);
             }),
-            DateTime::make('Valid from'),
-            DateTime::make('Valid till'),
+            DateTime::make(__('Valid from'), 'valid_from'),
+            DateTime::make(__('Valid till'), 'valid_till'),
         ];
     }
 
