@@ -10,4 +10,15 @@ class Currency extends Model
     use SoftDeletes;
 
     protected $guarded = [];
+
+    public static function getUserCurrent()
+    {
+        return request()->getUserCurrency();
+    }
+
+    public static function getExceptUserCurrent()
+    {
+        $current = self::getUserCurrent();
+        return self::where('id', '!=', $current->id)->get();
+    }
 }
