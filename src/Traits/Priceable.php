@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Config;
 use Marshmallow\Priceable\Models\Price;
 use Marshmallow\Priceable\Models\PriceType;
 use Illuminate\Database\Eloquent\Collection;
+use Marshmallow\Priceable\Facades\Price as PriceFacade;
 use Marshmallow\Priceable\Facades\Price as PriceHelper;
 
 trait Priceable
@@ -141,11 +142,19 @@ trait Priceable
     public function getPriceAttribute()
     {
         $type = $this->getPriceType();
-        if (! $this->price($type)) {
+        if (!$this->price($type)) {
             return;
         }
 
         return $this->price($type)->price();
+    }
+
+    /**
+     * Display the formatted price
+     */
+    public function getPriceFormattedAttribute()
+    {
+        return $this->price()->formatPrice();
     }
 
     protected function getPriceType()
@@ -155,6 +164,11 @@ trait Priceable
         }
 
         return $this->getDefaultPriceType();
+    }
+
+    protected function getCurrency()
+    {
+        return request()->getUserCurrency();
     }
 
     protected function getDefaultPriceType()
@@ -167,7 +181,30 @@ trait Priceable
      */
     public function availablePrices()
     {
-        return $this->prices()->where('price_type_id', $this->getPriceType()->id)->currentlyActive();
+        $builder = $this->prices();
+
+        /**
+         * Filter on price type
+         */
+        if ($price_type = $this->getPriceType()) {
+            $builder->where('price_type_id', $price_type->id);
+        }
+
+        /**
+         * Filter on currency. If we don't find any results
+         * with this current currency, then we return the un-filterd
+         * builder.
+         */
+        if ($currency = $this->getCurrency()) {
+            $currency_builder = clone $builder;
+            $currency_builder->where('currency_id', $currency->id);
+
+            if ($currency_builder->count()) {
+                $builder = $currency_builder;
+            }
+        }
+
+        return $builder->currentlyActive();
     }
 
     public function prices(PriceType $type = null)

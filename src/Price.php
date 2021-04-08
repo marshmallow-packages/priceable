@@ -48,16 +48,31 @@ class Price
 
     public function formatAmount($amount, $currency = null)
     {
-        return Cashier::formatAmount($amount, $currency);
+        $currency = $this->getCurrency($currency);
+        return Cashier::formatAmount($amount, $currency, $this->getLocale());
     }
 
     public function getMoney($amount, Currency $currency = null)
     {
-        if (! $currency) {
+        if (!$currency) {
             $currency = new Currency('eur');
         }
 
         return new Money($amount, $currency);
+    }
+
+    public function getLocale()
+    {
+        return request()->getUserLocale();
+    }
+
+    public function getCurrency(Currency $currency = null)
+    {
+        if ($currency) {
+            return $currency;
+        }
+
+        return request()->getUserCurrency()->iso_4217;
     }
 
     public function amount($amount, $currency = null)
