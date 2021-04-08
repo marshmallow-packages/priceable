@@ -2,6 +2,7 @@
 
 namespace Marshmallow\Priceable\Models;
 
+use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Marshmallow\Priceable\Models\PriceType;
@@ -165,9 +166,9 @@ class Price extends Model
         if (config('priceable.nova.prices_are_including_vat')) {
 
             /**
-    		 * The added price is including the VAT. We need to calculate
-    		 * the price without the VAT.
-    		 */
+             * The added price is including the VAT. We need to calculate
+             * the price without the VAT.
+             */
             $price_excluding_vat = ($this->display_price / (100 + $this->vatrate->rate)) * 100;
         } else {
             $price_excluding_vat = $this->display_price;
