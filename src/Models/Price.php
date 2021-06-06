@@ -66,12 +66,12 @@ class Price extends Model
 
     public function priceAppendingCurrencyString()
     {
-        return $this->price() . ' ' . Str::of(env('CASHIER_CURRENCY'))->upper();
+        return $this->price() . ' ' . Str::of(config('priceable.currency'))->upper();
     }
 
     public function pricePrependingCurrencyString()
     {
-        return Str::of(env('CASHIER_CURRENCY'))->upper() . ' ' . $this->price();
+        return Str::of(config('priceable.currency'))->upper() . ' ' . $this->price();
     }
 
     public function formatExcludingVat()

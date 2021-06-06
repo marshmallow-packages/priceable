@@ -4,7 +4,9 @@ namespace Marshmallow\Priceable;
 
 use Money\Money;
 use Money\Currency;
-use Laravel\Cashier\Cashier;
+use NumberFormatter;
+use Money\Currencies\ISOCurrencies;
+use Money\Formatter\IntlMoneyFormatter;
 use Marshmallow\Priceable\Models\VatRate;
 use Marshmallow\Priceable\Models\Currency as PricableCurrency;
 
@@ -46,10 +48,17 @@ class Price
         return $this;
     }
 
-    public function formatAmount($amount, $currency = null)
+    public function formatAmount($amount, $currency = null, $locale = null)
     {
         $currency = $this->getCurrency($currency);
-        return Cashier::formatAmount($amount, $currency, $this->getLocale());
+        $money = new Money($amount, new Currency(strtoupper($currency ?? config('priceable.currency'))));
+
+        $locale = $locale ?? config('priceable.currency_locale');
+
+        $numberFormatter = new NumberFormatter($locale, NumberFormatter::CURRENCY);
+        $moneyFormatter = new IntlMoneyFormatter($numberFormatter, new ISOCurrencies());
+
+        return $moneyFormatter->format($money);
     }
 
     public function getMoney($amount, Currency $currency = null)
