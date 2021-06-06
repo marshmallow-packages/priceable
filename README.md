@@ -42,7 +42,7 @@ isDiscounted()
 discountedFrom()
 
 ```
-CASHIER_CURRENCY=eur
+CURRENCY=eur
 ```
 
 php artisan db:seed --class=Marshmallow\\Product\\Database\\Seeds\\VatRatesSeeder
