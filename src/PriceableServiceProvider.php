@@ -38,7 +38,13 @@ class PriceableServiceProvider extends ServiceProvider
             if ($session = Session::get('user-currency')) {
                 return Currency::find($session);
             }
-            return Currency::find(config('priceable.nova.defaults.currencies'));
+
+            $currency = Currency::find(config('priceable.nova.defaults.currencies'));
+            if (!$currency) {
+                $currency = Currency::first();
+            }
+
+            return $currency;
         });
 
         $this->publishes([

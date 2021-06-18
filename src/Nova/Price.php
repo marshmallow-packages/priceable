@@ -9,9 +9,9 @@ use Laravel\Nova\Fields\Currency;
 use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\BelongsTo;
 use Marshmallow\Priceable\Nova\VatRate;
-use Marshmallow\Priceable\Nova\Currency as CurrencyResource;
 use Marshmallow\Priceable\Nova\PriceType;
 use Marshmallow\Priceable\Nova\Helpers\FieldNameHelper;
+use Marshmallow\Priceable\Nova\Currency as CurrencyResource;
 
 class Price extends Resource
 {
@@ -54,9 +54,9 @@ class Price extends Resource
             MorphTo::make(__('Priceable'), 'priceable')->types(
                 config('priceable.nova.resources')
             ),
-            BelongsTo::make(__('Price Type'), 'type', PriceType::class)->withoutTrashed(),
-            BelongsTo::make(__('Vat rate'), 'vatrate', VatRate::class)->withoutTrashed(),
-            BelongsTo::make(__('Currency'), 'currency', CurrencyResource::class)->withoutTrashed(),
+            BelongsTo::make(__('Price Type'), 'type', config('priceable.resources.price_type'))->withoutTrashed(),
+            BelongsTo::make(__('Vat rate'), 'vatrate', config('priceable.resources.vat'))->withoutTrashed(),
+            BelongsTo::make(__('Currency'), 'currency', config('priceable.resources.currency'))->withoutTrashed(),
             Currency::make(FieldNameHelper::priceLabel(), 'display_price')->displayUsing(function ($value) {
                 return \Marshmallow\Priceable\Facades\Price::formatAmount($value);
             })->resolveUsing(function ($value) {
