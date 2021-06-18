@@ -117,17 +117,17 @@ class Price extends Model
      */
     public function type()
     {
-        return $this->belongsTo(PriceType::class, 'price_type_id');
+        return $this->belongsTo(config('priceable.models.price_type'), 'price_type_id');
     }
 
     public function vatrate()
     {
-        return $this->belongsTo(VatRate::class);
+        return $this->belongsTo(config('priceable.models.vat'));
     }
 
     public function currency()
     {
-        return $this->belongsTo(Currency::class);
+        return $this->belongsTo(config('priceable.models.currency'));
     }
 
     public function priceable()

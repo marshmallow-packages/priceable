@@ -173,7 +173,7 @@ trait Priceable
 
     protected function getDefaultPriceType()
     {
-        return PriceType::find(config('priceable.detault_price_type'));
+        return config('priceable.models.price_type')::find(config('priceable.detault_price_type'));
     }
 
     /**
@@ -204,11 +204,12 @@ trait Priceable
             }
         }
 
+
         return $builder->currentlyActive();
     }
 
     public function prices(PriceType $type = null)
     {
-        return $this->morphMany(Price::class, 'priceable');
+        return $this->morphMany(config('priceable.models.price'), 'priceable');
     }
 }

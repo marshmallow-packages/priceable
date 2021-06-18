@@ -8,7 +8,7 @@ use NumberFormatter;
 use Money\Currencies\ISOCurrencies;
 use Money\Formatter\IntlMoneyFormatter;
 use Marshmallow\Priceable\Models\VatRate;
-use Marshmallow\Priceable\Models\Currency as PricableCurrency;
+use Marshmallow\Priceable\Models\Currency as PriceableCurrency;
 
 class Price
 {
@@ -24,7 +24,7 @@ class Price
 
     public $vat_amount;
 
-    public function make(VatRate $vatrate, PricableCurrency $currency, int $display_amount, bool $display_is_including_vat)
+    public function make(VatRate $vatrate, PriceableCurrency $currency, int $display_amount, bool $display_is_including_vat)
     {
         $this->vatrate = $vatrate;
         $this->currency = $currency;
