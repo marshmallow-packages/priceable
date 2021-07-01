@@ -37,12 +37,15 @@ class Price
              * the price without the VAT.
              */
             $price_excluding_vat = round(($display_amount / (100 + $vatrate->rate)) * 100);
+            $price_including_vat = $display_amount;
         } else {
             $price_excluding_vat = $display_amount;
+            $price_including_vat = round($price_excluding_vat * $vatrate->multiplier());
         }
 
         $this->price_excluding_vat = $price_excluding_vat;
-        $this->price_including_vat = round($price_excluding_vat * $vatrate->multiplier());
+        $this->price_including_vat = $price_including_vat;
+
         $this->vat_amount = $this->price_including_vat - $this->price_excluding_vat;
 
         return $this;
