@@ -53,7 +53,7 @@ class Price extends Resource
         return [
             MorphTo::make(__('Priceable'), 'priceable')->types(
                 config('priceable.nova.resources')
-            ),
+            )->searchable(),
             BelongsTo::make(__('Price Type'), 'type', config('priceable.resources.price_type'))->withoutTrashed(),
             BelongsTo::make(__('Vat rate'), 'vatrate', config('priceable.resources.vat'))->withoutTrashed(),
             BelongsTo::make(__('Currency'), 'currency', config('priceable.resources.currency'))->withoutTrashed(),
