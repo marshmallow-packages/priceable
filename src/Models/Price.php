@@ -3,9 +3,9 @@
 namespace Marshmallow\Priceable\Models;
 
 use Illuminate\Support\Str;
+use App\Observers\PriceableObserver;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
-use Marshmallow\Priceable\Models\PriceType;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Marshmallow\HelperFunctions\Traits\Observer;
 use Marshmallow\HelperFunctions\Traits\ModelHasDefaults;
@@ -13,7 +13,9 @@ use Marshmallow\HelperFunctions\Facades\Builder as BuilderFacade;
 
 class Price extends Model
 {
-    use ModelHasDefaults, Observer, SoftDeletes;
+    use Observer;
+    use SoftDeletes;
+    use ModelHasDefaults;
 
     protected $guarded = [];
 
@@ -21,6 +23,17 @@ class Price extends Model
         'valid_from' => 'datetime',
         'valid_till' => 'datetime',
     ];
+
+    /**
+     * The "booting" method of the model.
+     *
+     * @return void
+     */
+    protected static function boot()
+    {
+        parent::boot();
+        self::observe(self::getObserver());
+    }
 
     protected function formatAmount($amount, $currency = null)
     {
@@ -151,31 +164,8 @@ class Price extends Model
         ];
     }
 
-    /**
-     * Observer will make sure the "hidden" columns
-     * will be filled when creating or updating
-     * a price.
-     */
     public static function getObserver(): string
     {
-        return \Marshmallow\Priceable\Observers\PriceObserver::class;
-    }
-
-    public function __saving()
-    {
-        if (config('priceable.nova.prices_are_including_vat')) {
-
-            /**
-             * The added price is including the VAT. We need to calculate
-             * the price without the VAT.
-             */
-            $price_excluding_vat = ($this->display_price / (100 + $this->vatrate->rate)) * 100;
-        } else {
-            $price_excluding_vat = $this->display_price;
-        }
-
-        $this->price_excluding_vat = $price_excluding_vat;
-        $this->price_including_vat = $price_excluding_vat * $this->vatrate->multiplier();
-        $this->vat_amount = $this->price_including_vat - $this->price_excluding_vat;
+        return config('priceable.observers.price', PriceableObserver::class);
     }
 }

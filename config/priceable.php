@@ -52,4 +52,8 @@ return [
     'on_multiple_prices' => 'lowest', // highest, lowest, eldest, newest
 
     'public_excluding_vat' => env('PRICEABLE_PUBLIC_EXCLUDING_VAT', false),
+
+    'observers' => [
+        'price' => \Marshmallow\Priceable\Observers\PriceableObserver::class,
+    ],
 ];
