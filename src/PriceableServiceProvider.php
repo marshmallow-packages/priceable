@@ -36,12 +36,12 @@ class PriceableServiceProvider extends ServiceProvider
 
         Request::macro('getUserCurrency', function () {
             if ($session = Session::get('user-currency')) {
-                return Currency::find($session);
+                return config('priceable.models.currency')::find($session);
             }
 
-            $currency = Currency::find(config('priceable.nova.defaults.currencies'));
+            $currency = config('priceable.models.currency')::find(config('priceable.nova.defaults.currencies'));
             if (!$currency) {
-                $currency = Currency::first();
+                $currency = config('priceable.models.currency')::first();
             }
 
             return $currency;
