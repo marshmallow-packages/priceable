@@ -20,12 +20,19 @@
     },
     "minimum-stability": "dev",
     "require": {
-        "php": "^7.4|^8.0|^8.1",
+        "php": "^8.0|^8.1",
         "marshmallow/sluggable": "^1.0",
         "marshmallow/helpers": "^2.0",
         "marshmallow/commands": "^1.0",
-        "moneyphp/money": "^v4.0.3"
+        "moneyphp/money": "^v4.0.3",
+        "laravel/nova": "^4.0"
     },
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://nova.laravel.com"
+        }
+    ],
     "autoload": {
         "psr-4": {
             "Marshmallow\\Priceable\\": "src"
