@@ -24,6 +24,14 @@ class Price
 
     public $vat_amount;
 
+    public $display_discount;
+
+    public $discount_excluding_vat;
+
+    public $discount_including_vat;
+
+    public $discount_vat_amount;
+
     public function make(VatRate $vatrate, PriceableCurrency $currency, int $display_amount, bool $display_is_including_vat)
     {
         $this->vatrate = $vatrate;
