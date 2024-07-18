@@ -17,7 +17,7 @@ class CreateVatTable extends Migration
             $table->id();
             $table->string('name');
             $table->string('slug')->unique();
-            $table->unsignedFloat('rate');
+            $table->float('rate');
             $table->timestamps();
             $table->softDeletes();
         });
