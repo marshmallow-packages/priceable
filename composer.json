@@ -25,7 +25,7 @@
         "marshmallow/helpers": "^2.0",
         "marshmallow/commands": "^1.0",
         "moneyphp/money": "^v4.0.3",
-        "laravel/nova": "^4.0"
+        "laravel/nova": "^4.0|^5.0"
     },
     "repositories": [
         {
