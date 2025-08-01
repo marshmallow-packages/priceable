@@ -208,7 +208,7 @@ trait Priceable
         return $builder->currentlyActive();
     }
 
-    public function prices(PriceType $type = null)
+    public function prices(?PriceType $type = null)
     {
         return $this->morphMany(config('priceable.models.price'), 'priceable');
     }
