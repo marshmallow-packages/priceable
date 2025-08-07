@@ -23,7 +23,7 @@ class CurrencySeeder extends Seeder
     public function run()
     {
         foreach ($this->default_currencies as $currency => $iso) {
-            if (Currency::where('name', $currency)->get()->first()) {
+            if (Currency::where('name', $currency)->first()) {
                 continue;
             }
 

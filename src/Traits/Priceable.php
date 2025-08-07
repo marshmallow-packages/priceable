@@ -142,11 +142,11 @@ trait Priceable
     public function getPriceAttribute()
     {
         $type = $this->getPriceType();
-        if (!$this->price($type)) {
+        if (!$this->prices($type)->first()) {
             return;
         }
 
-        return $this->price($type)->price();
+        return $this->prices($type)->first()->price();
     }
 
     /**

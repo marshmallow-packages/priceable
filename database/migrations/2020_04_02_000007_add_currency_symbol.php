@@ -16,7 +16,7 @@ class AddCurrencySymbol extends Migration
     public function up()
     {
         Schema::table('currencies', function (Blueprint $table) {
-            $table->text('symbol', 10)->nullable()->default(NULL)->after('iso_4217');
+            $table->string('symbol', 10)->nullable()->default(NULL)->after('iso_4217');
         });
     }
 
