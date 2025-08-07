@@ -64,7 +64,7 @@ class Price
         return $moneyFormatter->format($money);
     }
 
-    public function getMoney($amount, Currency $currency = null)
+    public function getMoney($amount, ?Currency $currency = null)
     {
         if (!$currency) {
             $currency = new Currency('eur');
@@ -78,7 +78,7 @@ class Price
         return request()->getUserLocale();
     }
 
-    public function getCurrency(Currency $currency = null)
+    public function getCurrency(?Currency $currency = null)
     {
         if ($currency) {
             return $currency;

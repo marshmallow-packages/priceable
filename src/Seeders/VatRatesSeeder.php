@@ -25,7 +25,7 @@ class VatRatesSeeder extends Seeder
     public function run()
     {
         foreach ($this->default_vat_rates as $rate) {
-            if (VatRate::where('name', $rate[0])->get()->first()) {
+            if (VatRate::where('name', $rate[0])->first()) {
                 continue;
             }
 

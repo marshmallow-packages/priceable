@@ -48,7 +48,7 @@ class Price extends Model
     /**
      * This will make sure that the submitted amount in Nova
      * is multiplied by 100 so we can store it in cents.
-     * @param [type] $amount [description]
+     * @param float $amount The amount to be stored in cents
      */
     protected function setDisplayPriceAttribute(float $amount)
     {
