@@ -25,13 +25,18 @@ class Price extends Model
     ];
 
     /**
-     * The "booting" method of the model.
+     * The "booted" method of the model.
+     *
+     * Registering the observer runs in booted() rather than boot() because
+     * Model::observe() instantiates the model (new static). As of Laravel 13
+     * that throws a LogicException when done while the model is still booting.
+     * booted() runs after booting completes, so it is safe.
      *
      * @return void
      */
-    protected static function boot()
+    protected static function booted()
     {
-        parent::boot();
+        parent::booted();
         self::observe(self::getObserver());
     }
 
