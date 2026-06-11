@@ -1,16 +1,20 @@
-![alt text](https://cdn.marshmallow-office.com/media/images/logo/marshmallow.transparent.red.png "marshmallow.")
+![alt text](https://marshmallow.dev/cdn/media/logo-red-237x46.png "marshmallow.")
 
-# Priceable
+# Laravel Priceable
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/marshmallow/priceable.svg?style=flat-square)](https://packagist.org/packages/marshmallow/priceable)
 [![Total Downloads](https://img.shields.io/packagist/dt/marshmallow/priceable.svg?style=flat-square)](https://packagist.org/packages/marshmallow/priceable)
 
-Package for handling prices. Priceable lets you attach one or more prices to any
-Eloquent model through a polymorphic relationship, with built-in support for VAT
-rates, currencies, price types and a Laravel Nova integration. It is typically
-used together with Marshmallow's Cart or Ecommerce packages.
+Attach prices, currencies, VAT rates and price types to any Eloquent model. Priceable handles VAT calculation, multi-currency, discounts and validity periods, and ships ready-made Laravel Nova resources for managing it all.
 
 ## Installation
+
+Priceable depends on [Laravel Nova](https://nova.laravel.com), a paid package. Make sure the Nova Composer repository is configured and your credentials are set:
+
+```bash
+composer config repositories.nova composer https://nova.laravel.com
+composer config http-basic.nova.laravel.com "your-email" "your-license-key"
+```
 
 Install the package via Composer:
 
@@ -18,22 +22,19 @@ Install the package via Composer:
 composer require marshmallow/priceable
 ```
 
-The service provider is auto-discovered. It registers the package routes and
-loads the migrations automatically, so run them after installing:
+Publish the config file:
+
+```bash
+php artisan vendor:publish --tag="config"
+```
+
+The migrations are loaded automatically by the package, so just run:
 
 ```bash
 php artisan migrate
 ```
 
-Publish the config file:
-
-```bash
-php artisan vendor:publish --provider="Marshmallow\Priceable\PriceableServiceProvider" --tag="config" --force
-```
-
-### Seed currencies and VAT rates
-
-The package ships seeders with a set of default currencies and VAT rates:
+Seed the default currencies and VAT rates:
 
 ```bash
 php artisan db:seed --class="Marshmallow\Priceable\Seeders\CurrencySeeder"
@@ -42,34 +43,26 @@ php artisan db:seed --class="Marshmallow\Priceable\Seeders\VatRatesSeeder"
 
 ## Configuration
 
-The config file is published to `config/priceable.php`. The available keys are:
+`config/priceable.php`:
 
 | Key | Default | Description |
 | --- | --- | --- |
-| `detault_price_type` | `1` | ID of the price type used when none is specified. |
-| `currency` | `env('CURRENCY', env('CASHIER_CURRENCY', 'eur'))` | Default currency code used for formatting amounts. |
-| `currency_locale` | `env('CURRENCY_LOCALE', env('CASHIER_CURRENCY_LOCALE', 'nl'))` | Locale used to format monetary values. |
-| `models` | `vat`, `price`, `currency`, `price_type` | Model classes used by the package. Override to swap in your own models. |
-| `resources` | `vat`, `price`, `currency`, `price_type` | Nova resource classes for each model. |
+| `detault_price_type` | `1` | The price type id used when a model doesn't ask for a specific one. |
+| `currency` | `env('CURRENCY', 'eur')` | Default currency code. |
+| `currency_locale` | `env('CURRENCY_LOCALE', 'nl')` | Locale used to format money. |
+| `models` | `Price`, `Currency`, `VatRate`, `PriceType` | Swap any model for your own implementation. |
+| `resources` | Priceable Nova resources | Swap any Nova resource for your own. |
 | `nova.prices_are_including_vat` | `true` | Whether prices entered in Nova include VAT. |
-| `nova.defaults.currencies` | `1` | Default currency ID for new prices. |
-| `nova.defaults.vat_rates` | `2` | Default VAT rate ID for new prices. |
-| `nova.resources` | `[ ... ]` | Priceable Nova resources so Nova knows where to look for them. |
-| `on_multiple_prices` | `'lowest'` | Which price to use when a model has multiple: `highest`, `lowest`, `eldest` or `newest`. |
-| `public_excluding_vat` | `env('PRICEABLE_PUBLIC_EXCLUDING_VAT', false)` | When `true`, public price methods return amounts excluding VAT. |
-| `observers.price` | `PriceableObserver::class` | Observer applied to the `Price` model. |
-
-You can set the default currency through your `.env` file:
-
-```dotenv
-CURRENCY=eur
-```
+| `nova.defaults.currencies` | `1` | Default currency id for new prices. |
+| `nova.defaults.vat_rates` | `2` | Default VAT rate id for new prices. |
+| `nova.resources` | `[]` | Priceable models that Nova should expose. |
+| `on_multiple_prices` | `'lowest'` | Which price wins when a model has several: `highest`, `lowest`, `eldest`, `newest`. |
+| `public_excluding_vat` | `false` | Display prices excluding VAT on the front-end. |
+| `observers.price` | `PriceableObserver` | Observer that computes the VAT columns on save. |
 
 ## Usage
 
-### Make a model priceable
-
-Add the `Priceable` trait to any Eloquent model you want to attach prices to:
+Add the `Priceable` trait to any model you want to price:
 
 ```php
 use Illuminate\Database\Eloquent\Model;
@@ -81,98 +74,65 @@ class Product extends Model
 }
 ```
 
-The trait adds a polymorphic `prices()` relationship and a number of helper
-methods:
+Attach a price (prices are polymorphic, so any priceable model works):
 
 ```php
-$product->currentPrice();      // Current price for the active currency/price type
-$product->discountedFrom();    // The highest price, e.g. the "from" price when discounted
-$product->isDiscounted();      // True when the model has multiple, differing prices
-$product->getHighestPrice();   // The highest available price
-$product->hasPrice();          // True when at least one active price exists
-$product->price;               // Price attribute accessor
-$product->price_formatted;     // Formatted price string
-
-// Scope to a specific price type:
-$product->priceType($priceType)->currentPrice();
+$product->prices()->create([
+    'price_type_id' => config('priceable.detault_price_type'),
+    'currency_id'   => 1,
+    'vatrate_id'    => 2,
+    'display_price' => 19.95,
+    'valid_from'    => now(),
+]);
 ```
 
-### Formatting a price
-
-Each `Price` model exposes formatting and VAT helpers:
+Read prices on the front-end:
 
 ```php
-$price->formatPrice();          // Formatted price (incl. or excl. VAT per config)
-$price->includingVat();         // Amount including VAT
-$price->excludingVat();         // Amount excluding VAT
-$price->vat();                  // VAT amount
-$price->formatIncludingVat();   // Formatted amount including VAT
-$price->formatExcludingVat();   // Formatted amount excluding VAT
-$price->formatVat();            // Formatted VAT amount
+$product->currentPrice();   // numeric price for the active currency & price type
+$product->price;            // the resolved Price model (->price(), ->formatPrice(), ...)
+$product->price_formatted;  // formatted string, e.g. "€ 19,95"
+
+$product->isDiscounted();   // true when multiple prices resolve to different amounts
+$product->discountedFrom(); // the highest price, to show a struck-through "from" price
 ```
 
-### The Price facade
-
-The `Price` facade builds and formats price objects directly:
+Ask for a specific price type:
 
 ```php
-use Marshmallow\Priceable\Facades\Price;
+use Marshmallow\Priceable\Models\PriceType;
 
-Price::make($vatRate, $currency, $displayAmount, $displayIsIncludingVat);
-Price::formatAmount($amount);   // Formats an amount in cents to a currency string
+$product->priceType(PriceType::find(2))->currentPrice();
 ```
 
-### Currencies
+### Switching currency
 
-The `Currency` model provides helpers for the currency the visitor is currently
-using:
-
-```php
-use Marshmallow\Priceable\Models\Currency;
-
-Currency::getUserCurrent();        // The visitor's current currency
-Currency::getExceptUserCurrent();  // All other currencies
-```
-
-The package registers `set-currency/{currency}` (named `set-currency`) so users
-can switch currency. It also adds `setUserCurrency()` and `getUserCurrency()`
-macros to the request:
+The package registers a named `set-currency` route and request macros:
 
 ```blade
 @foreach (\Marshmallow\Priceable\Models\Currency::get() as $currency)
-    <a href="{{ route('set-currency', $currency) }}">
-        {{ $currency->name }}
-    </a>
+    <a href="{{ route('set-currency', $currency) }}">{{ $currency->name }}</a>
 @endforeach
 ```
 
-### Nova
-
-The package ships Nova resources for prices, currencies, VAT rates and price
-types (configurable under the `resources` key). To attach prices to one of your
-own Nova resources, use the `PriceableFields` helper to add the pivot fields to
-your relationship.
-
-## Testing
-
-```bash
-composer test
+```php
+request()->getUserCurrency();           // the visitor's active currency
+request()->setUserCurrency($currency);  // set it manually
 ```
 
-## Changelog
+## Contributing
 
-Please see the commit history for recent changes.
+Pull requests are welcome. For larger changes, please open an issue first to discuss what you would like to change.
 
 ## Security Vulnerabilities
 
-Please report security vulnerabilities to [stef@marshmallow.dev](mailto:stef@marshmallow.dev)
-rather than via the public issue tracker.
+Please report security vulnerabilities by email to [stef@marshmallow.dev](mailto:stef@marshmallow.dev) rather than via the public issue tracker.
 
 ## Credits
 
-- [Stef](https://marshmallow.dev)
+- [Stef van Esch](https://github.com/stefvanesch)
 - [All Contributors](https://github.com/marshmallow-packages/priceable/contributors)
 
 ## License
 
-The MIT License (MIT). Please see the [License File](LICENSE) for more information.
+The MIT License. Please see the [License File](LICENSE) for more information.
