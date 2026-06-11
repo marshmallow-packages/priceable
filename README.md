@@ -1,89 +1,138 @@
-![alt text](https://cdn.marshmallow-office.com/media/images/logo/marshmallow.transparent.red.png "marshmallow.")
+![alt text](https://marshmallow.dev/cdn/media/logo-red-237x46.png "marshmallow.")
 
-# Marshmallow Products
+# Laravel Priceable
 
-Deze package gaat alle logica houden voor producten. Producten zullen in het algemeen gebruikt worden in combinatie met de Cart of Ecommerce package.
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/marshmallow/priceable.svg?style=flat-square)](https://packagist.org/packages/marshmallow/priceable)
+[![Total Downloads](https://img.shields.io/packagist/dt/marshmallow/priceable.svg?style=flat-square)](https://packagist.org/packages/marshmallow/priceable)
 
-### Installatie
+Attach prices, currencies, VAT rates and price types to any Eloquent model. Priceable handles VAT calculation, multi-currency, discounts and validity periods, and ships ready-made Laravel Nova resources for managing it all.
 
+## Installation
+
+Priceable depends on [Laravel Nova](https://nova.laravel.com), a paid package. Make sure the Nova Composer repository is configured and your credentials are set:
+
+```bash
+composer config repositories.nova composer https://nova.laravel.com
+composer config http-basic.nova.laravel.com "your-email" "your-license-key"
 ```
+
+Install the package via Composer:
+
+```bash
 composer require marshmallow/priceable
 ```
 
-### Vendor Publish
-
-...
+Publish the config file:
 
 ```bash
-php artisan vendor:publish --provider="Marshmallow\Priceable\PriceableServiceProvider" --tag="config" --force
+php artisan vendor:publish --tag="config"
 ```
 
-### Methods
+The migrations are loaded automatically by the package, so just run:
 
-```php
-Currency::getUserCurrent();
-Currency::getExceptUserCurrent()
+```bash
+php artisan migrate
 ```
 
-### Routes
+Seed the default currencies and VAT rates:
+
+```bash
+php artisan db:seed --class="Marshmallow\Priceable\Seeders\CurrencySeeder"
+php artisan db:seed --class="Marshmallow\Priceable\Seeders\VatRatesSeeder"
+```
+
+## Configuration
+
+`config/priceable.php`:
+
+| Key | Default | Description |
+| --- | --- | --- |
+| `detault_price_type` | `1` | The price type id used when a model doesn't ask for a specific one. |
+| `currency` | `env('CURRENCY', 'eur')` | Default currency code. |
+| `currency_locale` | `env('CURRENCY_LOCALE', 'nl')` | Locale used to format money. |
+| `models` | `Price`, `Currency`, `VatRate`, `PriceType` | Swap any model for your own implementation. |
+| `resources` | Priceable Nova resources | Swap any Nova resource for your own. |
+| `nova.prices_are_including_vat` | `true` | Whether prices entered in Nova include VAT. |
+| `nova.defaults.currencies` | `1` | Default currency id for new prices. |
+| `nova.defaults.vat_rates` | `2` | Default VAT rate id for new prices. |
+| `nova.resources` | `[]` | Priceable models that Nova should expose. |
+| `on_multiple_prices` | `'lowest'` | Which price wins when a model has several: `highest`, `lowest`, `eldest`, `newest`. |
+| `public_excluding_vat` | `false` | Display prices excluding VAT on the front-end. |
+| `observers.price` | `PriceableObserver` | Observer that computes the VAT columns on save. |
+
+## Usage
+
+Add the `Priceable` trait to any model you want to price:
 
 ```php
+use Illuminate\Database\Eloquent\Model;
+use Marshmallow\Priceable\Traits\Priceable;
+
+class Product extends Model
+{
+    use Priceable;
+}
+```
+
+Attach a price (prices are polymorphic, so any priceable model works):
+
+```php
+$product->prices()->create([
+    'price_type_id' => config('priceable.detault_price_type'),
+    'currency_id'   => 1,
+    'vatrate_id'    => 2,
+    'display_price' => 19.95,
+    'valid_from'    => now(),
+]);
+```
+
+Read prices on the front-end:
+
+```php
+$product->currentPrice();   // numeric price for the active currency & price type
+$product->price;            // the resolved Price model (->price(), ->formatPrice(), ...)
+$product->price_formatted;  // formatted string, e.g. "€ 19,95"
+
+$product->isDiscounted();   // true when multiple prices resolve to different amounts
+$product->discountedFrom(); // the highest price, to show a struck-through "from" price
+```
+
+Ask for a specific price type:
+
+```php
+use Marshmallow\Priceable\Models\PriceType;
+
+$product->priceType(PriceType::find(2))->currentPrice();
+```
+
+### Switching currency
+
+The package registers a named `set-currency` route and request macros:
+
+```blade
 @foreach (\Marshmallow\Priceable\Models\Currency::get() as $currency)
-    <a href="{{ route('set-currency', $currency) }}">
-        {{ $currency->name }}
-    </a>
+    <a href="{{ route('set-currency', $currency) }}">{{ $currency->name }}</a>
 @endforeach
 ```
 
-### Available methods
-
-currentPrice()
-isDiscounted()
-discountedFrom()
-
-```
-CURRENCY=eur
+```php
+request()->getUserCurrency();           // the visitor's active currency
+request()->setUserCurrency($currency);  // set it manually
 ```
 
-php artisan db:seed --class=Marshmallow\\Product\\Database\\Seeds\\VatRatesSeeder
+## Contributing
 
-## To do
+Pull requests are welcome. For larger changes, please open an issue first to discuss what you would like to change.
 
-`php artisan marshmallow:resource Price Priceable`
-`php artisan marshmallow:resource VatRate Priceable`
-`php artisan marshmallow:resource Currency Priceable`
-`php artisan marshmallow:resource PriceType Priceable`
+## Security Vulnerabilities
 
-## Tests
+Please report security vulnerabilities by email to [stef@marshmallow.dev](mailto:stef@marshmallow.dev) rather than via the public issue tracker.
 
-Priceable
-is_can_make_use_of_the_price_facade
+## Credits
 
-Currency
-//
+- [Stef van Esch](https://github.com/stefvanesch)
+- [All Contributors](https://github.com/marshmallow-packages/priceable/contributors)
 
-VAT
-//
+## License
 
-Price
-it_has_one_currency
-it_has_one_vat_rate
-it_makes_use_of_default_vatrate_id
-it_makes_use_of_default_currency_id
-it_calculates_including_price_correctly_from_excluding_amount
-it_calculates_excluding_price_correctly_from_excluding_amount
-it_calculates_vat_amount_correctly_from_excluding_amount
-it_calculates_including_price_correctly_from_including_amount
-it_calculates_excluding_price_correctly_from_including_amount
-it_calculates_vat_amount_correctly_from_including_amount
-it_returns_a_carbon_instance_for_valid_from
-it_returns_a_carbon_instance_for_valid_till
-
-## Extra
-
-factory(Marshmallow\Product\Models\Product::class, 10)->create();
-
-## Tests during development
-
-`php artisan test packages/marshmallow/priceable`
-...
+The MIT License. Please see the [License File](LICENSE) for more information.
